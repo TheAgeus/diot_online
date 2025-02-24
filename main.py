@@ -1,11 +1,12 @@
 #Importaciones
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import pyautogui as pag
-import pyperclip as pc
 import openpyxl as opx
 import os
+
+
 from acciones_sel.login import login
+from acciones_sel.entrar_dec import picar_dec, ingresa_per_para_continuar
 
 # Declaraciones globales
 archivo_data = "Data.xlsx"
@@ -69,7 +70,15 @@ def mostrar_progreso_m(col_morall):
 # Procedimiento para declarar las fisicas
 def proceso_fisicas(col_fisicas):
     for i in range(len(col_fisicas)):
-        d = login()
+        d = webdriver.Chrome()
+        d = login(col_fisicas[i]["rfc"], d)
+
+        # Picar el circulito de al dec si esta gris
+        se_pico = picar_dec(col_fisicas[i]["rfc"], d)
+        
+        if se_pico :
+            d = ingresa_per_para_continuar(d)   # Ingresar periodo y el ejercicio
+            d = seleccionar_declar_en_cero(d)   # Seleccionar que es dec en ceros
 
 
 # Procedimiento para declarar las morales

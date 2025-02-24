@@ -3,7 +3,9 @@ from selenium.webdriver.common.by import By
 import pyautogui as pag
 import pyperclip as pc
 import openpyxl as opx
-import os
+import time
+
+from acciones_sel.credential import get_cer_path, get_key_path, get_password
 
 liga_portal = "https://pstcdi.clouda.sat.gob.mx/Home/"
 
@@ -28,11 +30,10 @@ def validar_pagina(d):
     return True
 
 # Procedimieno para abrir el navegador
-def abrir_navegador():
+def abrir_navegador(d):
     print("=> Abriedo navegador")
-    driver = webdriver.Chrome()
-    driver.maximize_window()
-    return driver
+    d.maximize_window()
+    return d
 
 
 # Prodecimiento para ir a la página
@@ -40,46 +41,53 @@ def ir_pagina(driver):
     print("=> Yendo a la página")
     driver.get(liga_portal)
 
-def login():
-    d = abrir_navegador()   
-    ir_pagina(d)
-    if not validar_pagina(d): # Nos aseguramos de que estén los elementos para proseguir
-        print("=> No se ha cargado bien la página de login")
-    else:
-        # Estos son los datos que vamos a necesitar
-        cer_path = ""
-        key_path = ""
-        password = ""
+def login(rfc, d):
 
-        # Ingresar el certificado
-        # Ingresar el archivo key
-        # Ingresar la contraseña
-        # Hacer click en submit
+    # Obtener credenciales
+    # Estos son los datos que vamos a necesitar
+    cer_path = get_cer_path(rfc)
+    key_path = get_key_path(rfc)
+    password = get_password(rfc)
+
+
+    d = abrir_navegador(d)   
+    ir_pagina(d)
+
+    if not validar_pagina(d): # Nos aseguramos de que estén los elementos para proseguir
+        
+        print("=> No se ha cargado bien la página de login")
+
+    else:
+
         # Obtenemos los controles
         txt_cert = d.find_element(By.ID, "txtCertificate")
         txt_keyy = d.find_element(By.ID, "txtPrivateKey")
         txt_pass = d.find_element(By.ID, "privateKeyPassword")
         btn_subm = d.find_element(By.ID, "submit")
-
+        
+        # Ingresar el certificado
         txt_cert.click()
-        d.implicitly_wait(3)
+        time.sleep(3)
         candp(cer_path)
-        d.implicitly_wait(3)
+        time.sleep(3)
         pag.press("enter")
-        d.implicitly_wait(3)
+        time.sleep(3)
 
+        # Ingresar el archivo key
         txt_keyy.click()
-        d.implicitly_wait(3)
+        time.sleep(3)
         candp(key_path)
-        d.implicitly_wait(3)
+        time.sleep(3)
         pag.press("enter")
-        d.implicitly_wait(3)
+        time.sleep(3)
 
+        # Ingresar la contraseña
         txt_pass.click()
-        d.implicitly_wait(3)
+        time.sleep(3)
         candp(password)
-        d.implicitly_wait(3)
+        time.sleep(3)
 
+        # Hacer click en submit
         btn_subm.click()
 
         return d
