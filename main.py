@@ -7,6 +7,7 @@ import os
 
 from acciones_sel.login import login
 from acciones_sel.entrar_dec import picar_dec, ingresa_per_para_continuar
+from acciones_sel.declarar_cero import declarar_cero
 
 # Declaraciones globales
 archivo_data = "Data.xlsx"
@@ -78,7 +79,7 @@ def proceso_fisicas(col_fisicas):
         
         if se_pico :
             d = ingresa_per_para_continuar(d)   # Ingresar periodo y el ejercicio
-            d = seleccionar_declar_en_cero(d)   # Seleccionar que es dec en ceros
+            d = declarar_cero(d)                # Seleccionar que es dec en ceros
 
 
 # Procedimiento para declarar las morales
