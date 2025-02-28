@@ -83,8 +83,9 @@ def ingresa_per_para_continuar(d):
         tde_sel_obj.select_by_index(1) # 1: Normal, 2: Normal por correccion fiscal
 
     # Picarle a siguente
-    time.sleep(1)
     pag.press("tab")
     pag.press("enter")
+    
+    time.sleep(20)
 
     return d

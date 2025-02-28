@@ -8,6 +8,7 @@ import os
 from acciones_sel.login import login
 from acciones_sel.entrar_dec import picar_dec, ingresa_per_para_continuar
 from acciones_sel.declarar_cero import declarar_cero
+from acciones_sel.reporte import esta_en_descargas, mover_descarga, salvar_en_bitacora
 
 # Declaraciones globales
 archivo_data = "Data.xlsx"
@@ -71,20 +72,45 @@ def mostrar_progreso_m(col_morall):
 # Procedimiento para declarar las fisicas
 def proceso_fisicas(col_fisicas):
     for i in range(len(col_fisicas)):
+        if col_fisicas[i]['subido'] == '1': continue
+
         d = webdriver.Chrome()
         d = login(col_fisicas[i]["rfc"], d)
 
         # Picar el circulito de al dec si esta gris
         se_pico = picar_dec(col_fisicas[i]["rfc"], d)
-        
+
         if se_pico :
             d = ingresa_per_para_continuar(d)   # Ingresar periodo y el ejercicio
             d = declarar_cero(d)                # Seleccionar que es dec en ceros
-
+            acuse_file = esta_en_descargas(col_fisicas[i]["rfc"])
+            if acuse_file:
+                mover_descarga(acuse_file)
+                col_fisicas[i]['subido'] = '1'
+                col_fisicas[i]['error'] = 'Ninguno'
+                salvar_en_bitacora(col_fisicas[i], i, 'Fisica')
+          
 
 # Procedimiento para declarar las morales
-def proceso_morales():
-    pass
+def proceso_morales(col_morales):
+   for i in range(len(col_morales)):
+        if col_morales[i]['subido'] == '1': continue
+
+        d = webdriver.Chrome()
+        d = login(col_morales[i]["rfc"], d)
+
+        # Picar el circulito de al dec si esta gris
+        se_pico = picar_dec(col_morales[i]["rfc"], d)
+
+        if se_pico :
+            d = ingresa_per_para_continuar(d)   # Ingresar periodo y el ejercicio
+            d = declarar_cero(d)                # Seleccionar que es dec en ceros
+            acuse_file = esta_en_descargas(col_morales[i]["rfc"])
+            if acuse_file:
+                mover_descarga(acuse_file)
+                col_morales[i]['subido'] = '1'
+                col_morales[i]['error'] = 'Ninguno'
+                salvar_en_bitacora(col_morales[i], i, 'Moral')
 
 # Procedimiento inicial o startport
 def main():
@@ -121,7 +147,7 @@ def main():
         elif usr_inp == "4":
            col_fisica = proceso_fisicas(col_fisica)
         elif usr_inp == "5":
-            col_fisica = proceso_morales(col_morall)
+            col_morall = proceso_morales(col_morall)
         elif usr_inp == "6":
             break
         else:
