@@ -49,6 +49,12 @@ def login(rfc, d):
     key_path = get_key_path(rfc)
     password = get_password(rfc)
 
+    if 'Error con la contraseña.' in password:
+        return password
+    if 'Error' in cer_path:
+        return cer_path
+    if 'Error' in key_path:
+        return key_path
 
     d = abrir_navegador(d)   
     ir_pagina(d)
@@ -89,5 +95,13 @@ def login(rfc, d):
 
         # Hacer click en submit
         btn_subm.click()
+
+        time.sleep(3)
+
+        # Checar que no haya habido error
+        try:
+            if d.find_element(By.ID, "divError").is_displayed() :
+                return d.find_element(By.ID, "divError").text
+        except: None
 
         return d

@@ -72,10 +72,29 @@ def mostrar_progreso_m(col_morall):
 # Procedimiento para declarar las fisicas
 def proceso_fisicas(col_fisicas):
     for i in range(len(col_fisicas)):
-        if col_fisicas[i]['subido'] == '1': continue
+        if not (
+            (col_fisicas[i]['subido'] == '0' or col_fisicas[i]['subido'] == '') and
+            (col_fisicas[i]['error'] == '')
+        ): continue
+
+        # Para que vuelva a checar en descargas
+        acuse_file = esta_en_descargas(col_fisicas[i]["rfc"])
+        if acuse_file:
+            mover_descarga(acuse_file)
+            col_fisicas[i]['subido'] = '1'
+            col_fisicas[i]['error'] = 'Ninguno'
+            salvar_en_bitacora(col_fisicas[i], i, 'Fisica')
+            continue
 
         d = webdriver.Chrome()
         d = login(col_fisicas[i]["rfc"], d)
+
+        # Valida si hay error con contraseña
+        if type(d).__name__ == 'str':
+            col_fisicas[i]['subido'] = '0'
+            col_fisicas[i]['error'] = d
+            salvar_en_bitacora(col_fisicas[i], i, 'Fisica')
+            continue
 
         # Picar el circulito de al dec si esta gris
         se_pico = picar_dec(col_fisicas[i]["rfc"], d)
@@ -83,6 +102,14 @@ def proceso_fisicas(col_fisicas):
         if se_pico :
             d = ingresa_per_para_continuar(d)   # Ingresar periodo y el ejercicio
             d = declarar_cero(d)                # Seleccionar que es dec en ceros
+            
+            # Si hubo problemas en la descarga
+            if type(d).__name__ == 'str':
+                col_fisicas[i]['subido'] = '0'
+                col_fisicas[i]['error'] = d
+                salvar_en_bitacora(col_fisicas[i], i, 'Fisica')
+                continue
+
             acuse_file = esta_en_descargas(col_fisicas[i]["rfc"])
             if acuse_file:
                 mover_descarga(acuse_file)
@@ -94,17 +121,36 @@ def proceso_fisicas(col_fisicas):
 # Procedimiento para declarar las morales
 def proceso_morales(col_morales):
    for i in range(len(col_morales)):
-        if col_morales[i]['subido'] == '1': continue
+        if not (
+            (col_morales[i]['subido'] == '0' or col_morales[i]['subido'] == '') and
+            (col_morales[i]['error'] == '')
+        ): continue
+
+        # Para que vuelva a checar en descargas
+        acuse_file = esta_en_descargas(col_morales[i]["rfc"])
+        if acuse_file:
+            mover_descarga(acuse_file)
+            col_morales[i]['subido'] = '1'
+            col_morales[i]['error'] = 'Ninguno'
+            salvar_en_bitacora(col_morales[i], i, 'Fisica')
+            continue
 
         d = webdriver.Chrome()
         d = login(col_morales[i]["rfc"], d)
+
+        # Valida si hay error con contraseña
+        if type(d).__name__ == 'str':
+            col_morales[i]['subido'] = '0'
+            col_morales[i]['error'] = d
+            salvar_en_bitacora(col_morales[i], i, 'Fisica')
+            continue
 
         # Picar el circulito de al dec si esta gris
         se_pico = picar_dec(col_morales[i]["rfc"], d)
 
         if se_pico :
             d = ingresa_per_para_continuar(d)   # Ingresar periodo y el ejercicio
-            d = declarar_cero(d)                # Seleccionar que es dec en ceros
+            d = declarar_cero(d,  col_morales[i]["rfc"], True)                # Seleccionar que es dec en ceros
             acuse_file = esta_en_descargas(col_morales[i]["rfc"])
             if acuse_file:
                 mover_descarga(acuse_file)
