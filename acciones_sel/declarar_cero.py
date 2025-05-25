@@ -37,14 +37,7 @@ def declarar_cero(d, rfc=None, es_moral=False):
     select_obj.select_by_visible_text("La presenta sin operaciones")
     
     time.sleep(3)
-    pag.press("tab")
-    pag.press("enter")
-
-    li_totales = [li for li in d.find_elements(By.TAG_NAME, "li") if li.text == "Totales"][0]
-    li_totales.click()
-
-    time.sleep(3)
-    pag.press("tab")
+    for i in range(3): pag.hotkey("shift", "tab")
     pag.press("enter")
 
      # Si datos adicionales tiene un 1 en rojo
@@ -70,31 +63,32 @@ def declarar_cero(d, rfc=None, es_moral=False):
     pag.press("enter")
 
     # Si es moral, debo de cargar otra vez las credenciales
-    time.sleep(10)
-    d.find_element(By.ID, "btnCert").click()
-    time.sleep(3)
-    candp(get_cer_path(rfc))
-    time.sleep(3)
-    pag.press("enter")
-    time.sleep(3)
+    if es_moral:
+        time.sleep(40)
+        d.find_element(By.ID, "btnCert").click()
+        time.sleep(3)
+        candp(get_cer_path(rfc))
+        time.sleep(3)
+        pag.press("enter")
+        time.sleep(3)
 
-    d.find_element(By.ID, "btnPrivateKey").click()
-    time.sleep(3)
-    candp(get_key_path(rfc))
-    time.sleep(3)
-    pag.press("enter")
-    time.sleep(3)
+        d.find_element(By.ID, "btnPrivateKey").click()
+        time.sleep(3)
+        candp(get_key_path(rfc))
+        time.sleep(3)
+        pag.press("enter")
+        time.sleep(3)
 
-    pag.press("tab")
-    time.sleep(3)
-    candp(get_password(rfc))
-    time.sleep(3)
-    pag.press("enter")
-    time.sleep(3)
+        pag.press("tab")
+        time.sleep(3)
+        candp(get_password(rfc))
+        time.sleep(3)
+        pag.press("enter")
+        time.sleep(3)
 
-    pag.press("tab")
-    pag.press("tab")
-    pag.press("enter")
+        pag.press("tab")
+        pag.press("tab")
+        pag.press("enter")
 
 
     time.sleep(5)

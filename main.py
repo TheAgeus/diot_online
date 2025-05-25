@@ -28,14 +28,18 @@ def cargar_datos():
             "rfc"       :   wsf["A" + str(i)].value if wsf["A" + str(i)].value is not None else "",
             "empresa"   :   wsf["B" + str(i)].value if wsf["B" + str(i)].value is not None else "",
             "subido"    :   wsf["C" + str(i)].value if wsf["C" + str(i)].value is not None else "",
-            "error"     :   wsf["D" + str(i)].value if wsf["D" + str(i)].value is not None else ""
+            "error"     :   wsf["D" + str(i)].value if wsf["D" + str(i)].value is not None else "",
+            "anio"      :   wsf["F" + str(i)].value if wsf["F" + str(i)].value is not None else "",
+            "mes"       :   wsf["G" + str(i)].value if wsf["G" + str(i)].value is not None else ""
         })
     for i in range(2, wsm.max_row):
         col_morall.append({
             "rfc"       :   wsm["A" + str(i)].value if wsm["A" + str(i)].value is not None else "",
             "empresa"   :   wsm["B" + str(i)].value if wsm["B" + str(i)].value is not None else "",
             "subido"    :   wsm["C" + str(i)].value if wsm["C" + str(i)].value is not None else "",
-            "error"     :   wsm["D" + str(i)].value if wsm["D" + str(i)].value is not None else ""
+            "error"     :   wsm["D" + str(i)].value if wsm["D" + str(i)].value is not None else "",
+            "anio"      :   wsf["F" + str(i)].value if wsf["F" + str(i)].value is not None else "",
+            "mes"       :   wsf["G" + str(i)].value if wsf["G" + str(i)].value is not None else ""
         })
     wb.close()
     return col_fisica, col_morall
@@ -45,28 +49,32 @@ def mostrar_progreso_f(col_fisica):
     if len(col_fisica) == 0:
         print("=> No hay datos para mostrar, cargue datos...")
         return
-    print(" +---------------+-----------------+-------+--------------------------------+")
-    print(" | RFC           | EMPRESA         | SUBID | ERROR                          |")
-    print(" +---------------+-----------------+-------+--------------------------------+")
+    print(" +---------------+-----------------+-------+--------------------------------+--------+-------+")
+    print(" | RFC           | EMPRESA         | SUBID | ERROR                          | AÑO    | MES   |")
+    print(" +---------------+-----------------+-------+--------------------------------+--------+-------+")
     for i in range(len(col_fisica)):
         subido = col_fisica[i]['subido'].ljust(5) if col_fisica[i]['subido'] != "" else "No".ljust(5)
         error = col_fisica[i]['error'][:30].ljust(30) if col_fisica[i]['error'] != "" else "Aún no se ha realizado el proceso"[:30].ljust(30)
-        print(f" | {col_fisica[i]['rfc']} | {col_fisica[i]['empresa'][:15].ljust(15)} | {subido} | {error} |")
-        print(" +---------------+-----------------+-------+--------------------------------+")
+        anio = col_fisica[i]['anio']
+        mes = col_fisica[i]['mes']
+        print(f" | {col_fisica[i]['rfc']} | {col_fisica[i]['empresa'][:15].ljust(15)} | {subido} | {error} | {anio}   | {str(mes).zfill(2)}    |")
+        print(" +---------------+-----------------+-------+--------------------------------+--------+-------+")
 
 # Procedimiento para mostrar progreso de morales  
 def mostrar_progreso_m(col_morall):
     if len(col_morall) == 0:
         print("=> No hay datos para mostrar, cargue datos...")
         return
-    print(" +---------------+-----------------+-------+--------------------------------+")
-    print(" | RFC           | EMPRESA         | SUBID | ERROR                          |")
-    print(" +---------------+-----------------+-------+--------------------------------+")
+    print(" +---------------+-----------------+-------+--------------------------------+--------+-------+")
+    print(" | RFC           | EMPRESA         | SUBID | ERROR                          | AÑO    | MES   |")
+    print(" +---------------+-----------------+-------+--------------------------------+--------+-------+")
     for i in range(len(col_morall)):
         subido = col_morall[i]['subido'].ljust(5) if col_morall[i]['subido'] != "" else "No".ljust(5)
         error = col_morall[i]['error'][:30].ljust(30) if col_morall[i]['error'] != "" else "Aún no se ha realizado el proceso"[:30].ljust(30)
-        print(f" | {col_morall[i]['rfc']}  | {col_morall[i]['empresa'][:15].ljust(15)} | {subido} | {error} |")
-        print(" +---------------+-----------------+-------+--------------------------------+")
+        anio = col_morall[i]['anio']
+        mes = col_morall[i]['mes']
+        print(f" | {col_morall[i]['rfc']}  | {col_morall[i]['empresa'][:15].ljust(15)} | {subido} | {error} | {anio}   | {str(mes).zfill(2)}    |")
+        print(" +---------------+-----------------+-------+--------------------------------+--------+-------+")
 
 
 # Procedimiento para declarar las fisicas
@@ -78,9 +86,11 @@ def proceso_fisicas(col_fisicas):
         ): continue
 
         # Para que vuelva a checar en descargas
+        año = col_fisicas[i]['anio']
+        mes = col_fisicas[i]['mes']
         acuse_file = esta_en_descargas(col_fisicas[i]["rfc"])
         if acuse_file:
-            mover_descarga(acuse_file)
+            mover_descarga(acuse_file, año, mes)
             col_fisicas[i]['subido'] = '1'
             col_fisicas[i]['error'] = 'Ninguno'
             salvar_en_bitacora(col_fisicas[i], i, 'Fisica')
@@ -100,7 +110,7 @@ def proceso_fisicas(col_fisicas):
         se_pico = picar_dec(col_fisicas[i]["rfc"], d)
 
         if se_pico :
-            d = ingresa_per_para_continuar(d)   # Ingresar periodo y el ejercicio
+            d = ingresa_per_para_continuar(d, año, mes)   # Ingresar periodo y el ejercicio
             d = declarar_cero(d)                # Seleccionar que es dec en ceros
             
             # Si hubo problemas en la descarga
@@ -112,7 +122,7 @@ def proceso_fisicas(col_fisicas):
 
             acuse_file = esta_en_descargas(col_fisicas[i]["rfc"])
             if acuse_file:
-                mover_descarga(acuse_file)
+                mover_descarga(acuse_file, año, mes)
                 col_fisicas[i]['subido'] = '1'
                 col_fisicas[i]['error'] = 'Ninguno'
                 salvar_en_bitacora(col_fisicas[i], i, 'Fisica')
@@ -127,9 +137,11 @@ def proceso_morales(col_morales):
         ): continue
 
         # Para que vuelva a checar en descargas
+        año = col_morales[i]['anio']
+        mes = col_morales[i]['mes']
         acuse_file = esta_en_descargas(col_morales[i]["rfc"])
         if acuse_file:
-            mover_descarga(acuse_file)
+            mover_descarga(acuse_file, año, mes)
             col_morales[i]['subido'] = '1'
             col_morales[i]['error'] = 'Ninguno'
             salvar_en_bitacora(col_morales[i], i, 'Fisica')
@@ -149,11 +161,11 @@ def proceso_morales(col_morales):
         se_pico = picar_dec(col_morales[i]["rfc"], d)
 
         if se_pico :
-            d = ingresa_per_para_continuar(d)   # Ingresar periodo y el ejercicio
-            d = declarar_cero(d,  col_morales[i]["rfc"], True)                # Seleccionar que es dec en ceros
+            d = ingresa_per_para_continuar(d, año, mes)   # Ingresar periodo y el ejercicio
+            d = declarar_cero(d,  col_morales[i]["rfc"], True)  # Seleccionar que es dec en ceros
             acuse_file = esta_en_descargas(col_morales[i]["rfc"])
             if acuse_file:
-                mover_descarga(acuse_file)
+                mover_descarga(acuse_file, año, mes)
                 col_morales[i]['subido'] = '1'
                 col_morales[i]['error'] = 'Ninguno'
                 salvar_en_bitacora(col_morales[i], i, 'Moral')

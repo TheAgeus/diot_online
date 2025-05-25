@@ -1,6 +1,6 @@
 import os
 
-fiels_path = "C:\\Users\\DIOT\\Desktop\\Diot-online\\fiel\\"
+fiels_path = "C:\\Users\\Diot en 0 ext\\Desktop\\Diot en 0 ext online\\fiel\\"
 
 def get_cer_path(rfc):
     try:

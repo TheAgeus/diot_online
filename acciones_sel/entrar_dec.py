@@ -11,12 +11,18 @@ def picar_dec(rfc, d):
 
     # Suele dar algun error aquí, mejor recargar
     while True:
+        # Si se regresa al login
+        try:
+            if (d.find_element(By.TAG_NAME, "h3").text == 'Acceso con e.firma'):
+                return False
+        except: None
         try:
             time.sleep(3)
             section_obl = d.find_element(By.ID, "sectionObligaciones")
             break
         except:
-            d.get("https://pstcdi.clouda.sat.gob.mx/Declaracion/PerfilDeclaracion")  
+            d.get("https://pstcdi.clouda.sat.gob.mx/Declaracion/PerfilDeclaracion") 
+
 
     divs = section_obl.find_elements(By.TAG_NAME, "div")
     for div in divs:
@@ -35,16 +41,7 @@ def picar_dec(rfc, d):
 
 
 # Procedimiento para ingresar el año y el mes y continuar
-def ingresa_per_para_continuar(d):
-    # Restar el mes (mes anterior)
-    ahora = datetime.now()
-    mes = ahora.month   
-    año = ahora.year    
-    if mes == 1:
-        mes = 12
-        año = año - 1
-    else:
-        mes = mes - 1   
+def ingresa_per_para_continuar(d, año, mes):
 
     # Obtener selects de ejercicio y periodicidad
     d.switch_to.window(d.window_handles[-1])
@@ -59,9 +56,10 @@ def ingresa_per_para_continuar(d):
     per_sel_obj.select_by_index(1)  
 
     # Obtener select del mes
-    time.sleep(1)
+    time.sleep(3)
     prs_sel = d.find_element(By.ID, "periodos")
     prs_sel_obj = Select(prs_sel) # Seleccionar el mes
+    time.sleep(3)
     prs_sel_obj.select_by_index(mes) 
 
     # Obtener select del tipo de declaracion
@@ -86,6 +84,11 @@ def ingresa_per_para_continuar(d):
     pag.press("tab")
     pag.press("enter")
     
+
+    # Aqui puede que salga que si pa reemplazar
+    time.sleep(3)
+    pag.press("enter")
+
     time.sleep(20)
 
     return d

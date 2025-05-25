@@ -18,7 +18,7 @@ def candp(text):
 # Procedimiento que valida que la página de login esté lista para interactuar
 def validar_pagina(d):
     print("=> Esperando 5 segundos para validar página de login")
-    d.implicitly_wait(5.0)
+    d.implicitly_wait(10.0)
     print("=> Validando página de login")
     try:
         txt_cert = d.find_element(By.ID, "txtCertificate")
