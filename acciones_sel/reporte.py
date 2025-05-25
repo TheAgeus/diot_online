@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 import openpyxl as opx
 
-acuses_path = "C:\\Users\\Diot en 0 ext\\Desktop\\Diot en 0 ext online\\acuses\\"
+acuses_path = "C:\\Users\\Diot en 0 ext\\Desktop\\Diot en 0 ext online complementaria\\acuses\\"
 downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
 archivo_data = "Data.xlsx"
 
@@ -39,11 +39,12 @@ def crear_carpetas(año, mes):
         print(f'La carpeta ya existe en: {ruta_carpeta}')
     return ruta_carpeta
 
-def salvar_en_bitacora(objeto, index, sheet):
+def salvar_en_bitacora(objeto, index, sheet): # Modificacion, no descargar complementaria. 24/05/2025
     row = index + 2
     wb = opx.load_workbook(archivo_data)
     ws = wb[sheet]
     ws.cell(row,3).value = objeto['subido']
     ws.cell(row,4).value = objeto['error']
+    ws.cell(row,8).value = objeto['complemen']
     wb.save(archivo_data)
     wb.close()

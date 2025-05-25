@@ -72,11 +72,8 @@ def ingresa_per_para_continuar(d, año, mes):
         if option.accessible_name == "Complementaria": 
             is_complementaria = True
     if is_complementaria:
-        tde_sel_obj.select_by_index(1) # 1: Complementaria, 2: Complementaria por correciion fiscal, 3: Complementaria por dictamen
-        time.sleep(1)
-        tdc_sel = d.find_element(By.ID, "tipocomplementaria")
-        tdc_sel_obj = Select(tdc_sel)  # Seleccionar tipo de complementaria
-        tdc_sel_obj.select_by_index(2) # 1: Dejar sin efecto, 2: Modificacion de declaracion, 3: Declaracion no presentada
+        # Modificacion, no descargar complementaria. 24/05/2025
+        return -1, True # return something(no importa), complementaria = true
     else:
         tde_sel_obj.select_by_index(1) # 1: Normal, 2: Normal por correccion fiscal
 
