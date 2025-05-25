@@ -37,7 +37,14 @@ def declarar_cero(d, rfc=None, es_moral=False):
     select_obj.select_by_visible_text("La presenta sin operaciones")
     
     time.sleep(3)
-    for i in range(3): pag.hotkey("shift", "tab")
+    #pag.press("tab")
+    #pag.press("enter")
+
+    li_totales = [li for li in d.find_elements(By.TAG_NAME, "li") if li.text == "Totales"][0]
+    li_totales.click()
+
+    time.sleep(3)
+    pag.press("tab")
     pag.press("enter")
 
      # Si datos adicionales tiene un 1 en rojo

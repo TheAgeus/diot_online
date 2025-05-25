@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 import openpyxl as opx
 
-acuses_path = "C:\\Users\\Diot en 0 ext\\Desktop\\Diot en 0 ext online\\acuses\\"
+acuses_path = "C:\\Users\\DIOT\\Desktop\\Diot-online\\acuses\\"
 downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
 archivo_data = "Data.xlsx"
 
@@ -18,14 +18,22 @@ def esta_en_descargas(rfc):
 
 
 # Procedimiento que mueve el acuse a su carpeta
-def mover_descarga(acuse_file, año, mes):
-    acuses_path = crear_carpetas(año, mes) 
+def mover_descarga(acuse_file):
+    acuses_path = crear_carpetas() 
     dest_path = os.path.join(acuses_path, acuse_file)
     src_path = os.path.join(downloads_path, acuse_file)
     os.rename(src_path, dest_path)
     
 # Procedimiento que nos ayuda a crear las carpetas si no existen para lso acuses
-def crear_carpetas(año, mes):
+def crear_carpetas():
+    ahora = datetime.now()
+    mes = ahora.month   
+    año = ahora.year    
+    if mes == 1:
+        mes = 12
+        año = año - 1
+    else:
+        mes = mes   #Aqui se crea y se descargan los Acuses
 
     # Ruta de la carpeta que deseas verificar o crear
     ruta_carpeta = os.path.join(acuses_path, str(año), str(mes))

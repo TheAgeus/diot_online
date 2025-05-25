@@ -5,7 +5,7 @@ from tkinter import Tk
 from openpyxl.styles import PatternFill  # Importamos el estilo para el color de fondo
 
 # Ruta base donde se encuentran las carpetas de los meses
-ruta_base = r"C:\Users\Diot en 0 ext\Desktop\Diot en 0 ext online\acuses\2025"
+ruta_base = r"C:\Users\DIOT\Desktop\Diot-online\acuses\2025"
 
 # Función para seleccionar la subcarpeta dentro de la ruta base
 def seleccionar_subcarpeta():
