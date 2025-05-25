@@ -53,5 +53,6 @@ def salvar_en_bitacora(objeto, index, sheet):
     ws = wb[sheet]
     ws.cell(row,3).value = objeto['subido']
     ws.cell(row,4).value = objeto['error']
+    ws.cell(row,6).value = objeto['compl']
     wb.save(archivo_data)
     wb.close()
